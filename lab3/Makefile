@@ -1,16 +1,20 @@
-#OBJ = src/main.o src/coder.o src/command.o
-APP_SOURCES = $(shell find $(SRC_DIR)/$(APP_NAME) -name '*.$(SRC_EXT)')
-APP_OBJECTS = $(APP_SOURCES:$(SRC_DIR)/%.$(SRC_EXT)=$(OBJ_DIR)/$(SRC_DIR)/%.o)
+APP_NAME = app
+OBJ = obj/coder.o obj/command.o obj/main.o 
+LIB  = obj/command.a obj/coder.a
+CFLAGS = -Wall 
+DEPSFLAGS = -MMD 
+GDB = -g 
 
- CFLAGS = -Wall 
- DEPS = -MMD
- GDB = 
+DEPS = $(OBJ:.o=.d)
+-include $(DEPS)
+.PHONY: all clean run
+all: $(APP_NAME)
 
- all: main
-
- main: $(APP_OBJECTS)
- 	$(CC) -o $@ $^
- %.o: %.c
- 	$(CC) $(CFLAGS)  $(DEPS) -c $^ -o $@
- clean:
- 	rm main *.o
+$(APP_NAME): $(OBJ) 
+	$(CC) $(CFLAGS) $(GDB) $(DEPSFLAGS) -o $@ $^
+obj/%.o: src/%.c 
+	$(CC) $(CFLAGS)  $(GDB) $(DEPSFLAGS) -c $< -o $@
+clean:
+	rm -rf $(APP_NAME) obj/*.o obj/*.d
+run:
+	./$(APP_NAME)
