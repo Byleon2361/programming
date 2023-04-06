@@ -3,6 +3,11 @@
 
 #include "command.h"
 #include "coder.h"
+// TODO: При decode появилась лишняя пятерка
+// Сделать проверки
+//  Разобраться
+//  Написать  отчет
+//
 int main(int argc, char *argv[])
 {
     if (argc != 4)
@@ -17,15 +22,18 @@ int main(int argc, char *argv[])
     if (strcmp(command, "encode") == 0)
     {
 
-        encode_file(in_file_name, out_file_name);
+        if (encode_file(in_file_name, out_file_name) != 0)
+        {
+            printf("Не удалось откыть файлы");
+        }
     }
-    else if (strcmp(command, "decode") == 0)
+
+    if (strcmp(command, "decode") == 0)
     {
-        decode_file(in_file_name, out_file_name);
-    }
-    else
-    {
-        return 1;
+        if (decode_file(in_file_name, out_file_name) != 0)
+        {
+            printf("Не удалось откыть файлы");
+        }
     }
     return 0;
 }

@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <stdio.h>
+#include <time.h>
 #define MAX 1000000
 /*size_t - 8 байт
  * Диапазон             Вероятность
@@ -50,7 +51,7 @@ uint32_t decode_varint(const uint8_t **bufp)
 {
     const uint8_t *cur = *bufp;
     uint8_t byte = *cur++;
-    uint32_t value = byte & 0x7f;
+    uint32_t value = byte & 0x7f; // 0111 1111
     size_t shift = 7;
     while (byte >= 0x80)
     {
@@ -76,6 +77,8 @@ void printArr(uint32_t *arr, int size)
 
 int main()
 {
+    // Кодирование
+    srand(time(NULL));
     uint32_t *values = malloc(sizeof(uint32_t) * MAX);
     size_t size = 0;
     uint8_t buf[4] = {};
@@ -97,7 +100,6 @@ int main()
             max++;
         }
     }
-
     FILE *f;
     f = fopen("uncompressed.dat", "wb"); // записывает из массив в uncompressed файл
     fwrite(values, sizeof(values[0]), MAX, f);
@@ -110,10 +112,9 @@ int main()
     free(values);
     free(compressed);
 
+    // Чтение
     uint32_t *ValuesFromFile = malloc(sizeof(uint32_t) * MAX);
-
     uint8_t *CompressedValuesFromFile = malloc(sizeof(uint8_t) * max);
-
     uint8_t *curp = CompressedValuesFromFile;
     const uint8_t **bufp = &curp;
 
@@ -126,7 +127,6 @@ int main()
         }
     }
     fclose(f);
-
     f = fopen("compressed.dat", "rb"); // читает из compressed файла в массив CompressedValuesFromFile
     if (f != NULL)
     {
@@ -152,5 +152,6 @@ int main()
 
     free(ValuesFromFile);
     free(CompressedValuesFromFile);
+
     return 0;
 }

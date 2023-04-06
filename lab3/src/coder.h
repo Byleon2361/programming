@@ -1,6 +1,11 @@
 #include <stdint.h>
+#include <stdio.h>
 #pragma once
-enum { MaxCodeLength = 4 };
+
+enum
+{
+  MaxCodeLength = 4
+};
 typedef struct // Пусть 	110xxxxx 10xxxxxx, тогда length = 2, а code[0] = 110xxxxx, code[1] = 10xxxxxx
 {
   uint8_t code[MaxCodeLength];

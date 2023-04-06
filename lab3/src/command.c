@@ -3,30 +3,38 @@
 #include <inttypes.h>
 #include <stdint.h>
 #include <stdio.h>
-int encode_file(const char *in_file_name, const char *out_file_name) {
+int encode_file(const char *in_file_name, const char *out_file_name)
+{
   FILE *in;
   FILE *out;
-
   in = fopen(in_file_name, "r");
-  if (!in) {
+  if (!in)
+  {
+    printf("\nОшибка. Не удалось открыть первый файл. ");
     return -1;
   }
-
   out = fopen(out_file_name, "wb");
-
-  if (!out) {
+  if (!out)
+  {
+    printf("\nОшибка. Не удалось открыть второй файл. ");
     return -1;
   }
-  uint32_t code_point; // то, что нужно закодировать
+  uint32_t code_point;
   CodeUnit code_unit;
-  while (fscanf(in, "%" SCNx32, &code_point) == 1) {
+  while (fscanf(in, "%" SCNx32, &code_point) == 1)
+  {
     printf("%" PRIx32, code_point);
 
-    if (encode(code_point, &code_unit) < 0) {
-      printf("\nFailed to encode"); // TODO: Напсить четкий error
+    if (encode(code_point, &code_unit) < 0)
+    {
+      printf("\nОшибка. Число слишком большое.");
       return -1;
     }
-    write_code_unit(out, &code_unit);
+    if (write_code_unit(out, &code_unit) < code_unit.length) // Если количество записанных объектов меньше, чем это указано при вызове, то произошла ошибка
+    {
+      printf("\nОшибка. Не удалось запсать числа в файл");
+      return -1;
+    }
   }
 
   fclose(in);
@@ -35,35 +43,52 @@ int encode_file(const char *in_file_name, const char *out_file_name) {
   return 0;
 }
 
-int decode_file(const char *in_file_name, const char *out_file_name) {
+int decode_file(const char *in_file_name, const char *out_file_name)
+{
   FILE *in;
   FILE *out;
-
+  /*
   in = fopen(in_file_name, "wb");
-  if (!in) {
+  uint8_t arr[7]; //
+  arr[0] = (unsigned char)7;//Правильное число, осталные битые
+  arr[1] = (unsigned char)140;
+  arr[2] = (unsigned char)234;
+  arr[3] = (unsigned char)243;
+  arr[4] = (unsigned char)140;
+  arr[5] = (unsigned char)234;
+  arr[6] = (unsigned char)243;
+  fwrite(arr, 1, 7, in);
+  fclose(in);
+  */
+  in = fopen(in_file_name, "rb");
+  if (!in)
+  {
+    printf("\nОшибка. Не удалось открыть первый файл. ");
     return -1;
   }
 
-  out = fopen(out_file_name, "r");
+  out = fopen(out_file_name, "w");
 
-  if (!out) {
+  if (!out)
+  {
+    printf("\nОшибка. Не удалось открыть второй файл. ");
     return -1;
   }
 
-  uint8_t code_point;
   CodeUnit code_unit;
-  while (read_code_unit(in, &code_unit) == 0) {
-    printf("%" PRIx32, code_point);
-    while () //Подсчитывать code_unit->length
+
+  while (!feof(in))
+  {
+    if (read_next_code_unit(in, &code_unit) != 0)
     {
-      code_unit->length++;
+      printf("Ошибка. Битый байт(\n");
+      continue;
     }
-    if (decode(&code_unit) < 0) {
-      printf("\nFailed to decode"); // TODO: Напсить четкий error
-      return -1;
+    if (!feof(in))
+    {
+      fprintf(out, "%" PRIx32, decode(&code_unit));
     }
   }
-
   fclose(in);
   fclose(out);
 
