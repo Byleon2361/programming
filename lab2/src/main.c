@@ -35,49 +35,49 @@ int main()
     
     puts("          int_vector_copy\n");
     puts("\nКопируем Второй вектор в Первый\n");
-    vector1 = int_vector_copy(vector2);
+    IntVector *a = int_vector_copy(vector2);
     puts("Первый вектор\n");
-    printVector(vector1);
+    printVector(a);
     puts("Второй вектор\n");
     printVector(vector2);
-
+    int_vector_free(vector1);
     puts("          int_vector_free. Очистим второй вектор.\n"); 
     int_vector_free(vector2);
-    printVector(vector1);
+    printVector(a);
 
     puts("          int_vector_get_item.\n");
-    printf("Index %d: %d\n",3,int_vector_get_item(vector1, 3));
+    printf("Index %d: %d\n",3,int_vector_get_item(a, 3));
 
     puts("          int_vector_set_item. Заменим второй индекс на значение 1\n");
-    int_vector_set_item(vector1, 2, 1);
-    printVector(vector1);
+    int_vector_set_item(a, 2, 1);
+    printVector(a);
 
     puts("          int_vector_get_size\n");
-    printf("Size: %ld\n",int_vector_get_size(vector1));
+    printf("Size: %ld\n",int_vector_get_size(a));
 
     puts("          int_vector_get_capacity\n");
-    printf("Capacity: %ld\n",int_vector_get_capacity(vector1));
+    printf("Capacity: %ld\n",int_vector_get_capacity(a));
 
     puts("          int_vector_push_back. Добавим в конец значение 2\n"); 
-    int_vector_push_back(vector1, 2);
-    printVector(vector1);
+    int_vector_push_back(a, 2);
+    printVector(a);
 
     puts("          int_vector_pop_back. Удалим посдеднюю двойку\n"); 
-    int_vector_pop_back(vector1);
-    printVector(vector1);
+    int_vector_pop_back(a);
+    printVector(a);
 
     puts("          int_vector_shrink_to_fit. Уменьшает емкость массива до его размера\n"); 
-    int_vector_shrink_to_fit(vector1);
-    printVector(vector1);
+    int_vector_shrink_to_fit(a);
+    printVector(a);
 
     puts("          int_vector_resize. Изменим размер массива на 11\n"); 
-    int_vector_resize(vector1, 11);
-    printVector(vector1);
+    int_vector_resize(a, 11);
+    printVector(a);
 
     puts("          int_vector_reserve. Изменим емкость массива на 20\n"); 
-    int_vector_reserve(vector1,20);
-    printVector(vector1);
+    int_vector_reserve(a,20);
+    printVector(a);
     
-
+    int_vector_free(a);
     return 0;
 }
