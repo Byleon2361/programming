@@ -77,6 +77,7 @@ void printArr(uint32_t *arr, int size)
 
 int main()
 {
+    /*
     // Кодирование
     srand(time(NULL));
     uint32_t *values = malloc(sizeof(uint32_t) * MAX);
@@ -152,6 +153,38 @@ int main()
 
     free(ValuesFromFile);
     free(CompressedValuesFromFile);
+    */
+    srand(time(NULL));
+    uint32_t *values = malloc(sizeof(uint32_t) * MAX);
+    size_t size = 0;
+    uint8_t buf[4] = {};
+    uint8_t *compressed = malloc(sizeof(uint8_t) * MAX * 2);
+    uint8_t *cur = compressed;
 
+    int count = 1;
+    values[0] = 0x4a5bc;
+
+    int max = 0;
+    for (int i = 0; i < count; i++) // Кодирует числа в массив commpressed
+    {
+        size = encode_varint(values[i], buf);
+        for (int j = 0; j < size; j++)
+        {
+            *cur = buf[j];
+            cur++;
+            max++;
+        }
+    }
+    FILE *f;
+    f = fopen("uncompressed.dat", "wb"); // записывает из массив в uncompressed файл
+    fwrite(values, sizeof(values[0]), count, f);
+    fclose(f);
+
+    f = fopen("compressed.dat", "wb"); // записывает из массив в compressed файл
+    fwrite(compressed, sizeof(compressed[0]), max, f);
+    fclose(f);
+
+    free(values);
+    free(compressed);
     return 0;
 }
