@@ -9,3 +9,4 @@ char* sFindAndReplace(char* str, char sym, char newSym);
 char* sDeleteSym(char* str, char sym);
 char toLowerChar(char ch);
 char* scat(char* first, char* second);
+char* sstr(char* str, char* underStr);

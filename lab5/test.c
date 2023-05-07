@@ -1,19 +1,32 @@
+#include <stdbool.h>
 #include <stdio.h>
-char toLowerChar(char ch)
+int scmp(char* str1, char* str2)
 {
-    if (ch >= 'a' && ch <= 'z')
-        return ch;
+    while (*str1 != '\0' && *str2 != '\0') {
+        if (*str1 != *str2)
+            break;
+        str1++;
+        str2++;
+    }
 
-    return ch + 32;
+    return (int)*str1 - (int)*str2;
+}
+char* sstr(char* str, char* underStr)
+{
+    while (*str != '\0') {
+        if ((*str == *underStr) && (scmp(str, underStr) != 0)) {
+            return str;
+        }
+        str++;
+    }
+
+    return NULL;
 }
 int main()
 {
-    printf("%c", toLowerChar('A'));
-
-    // char str[] = "C:\\Windows\\system32";
-    // str[0] = toLowerChar(str[0]);
-    // printf("%c\n", str[0]);
-    // printf("%s\n", str);
-
+    if (sstr("asdf", "asd") != NULL)
+        printf("INPUT\n");
+    else
+        printf("not INPUT\n");
     return 0;
 }

@@ -1,6 +1,6 @@
-#include <stdio.h>
-
 #include <libstring/libstring.h>
+#include <stdbool.h>
+#include <stdio.h>
 
 int slen(char* string)
 {
@@ -40,7 +40,7 @@ int sspn(char* str, char* sym)
 }
 int scmp(char* str1, char* str2)
 {
-    while (*str1 != NULL) {
+    while (*str1 != '\0' && *str2 != '\0') {
         if (*str1 != *str2)
             break;
         str1++;
@@ -108,4 +108,16 @@ char* scat(char* first, char* second)
     *first = '\0';
 
     return first;
+}
+
+char* sstr(char* str, char* underStr)
+{
+    while (*str != '\0') {
+        if ((*str == *underStr) && (scmp(str, underStr) != 0)) {
+            return str;
+        }
+        str++;
+    }
+
+    return NULL;
 }
