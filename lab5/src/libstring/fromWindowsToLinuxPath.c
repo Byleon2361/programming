@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 #include <libstring/fromWindowsToLinuxPath.h>
 #include <libstring/libstring.h>
@@ -40,36 +41,47 @@ int output(char* res)
 
 int checkNameFile(char* string, char delim)
 {
-    char* paths[MAX_NUMBER_PATH];
-    char temp[MAX_INPUT_DATA];
+    char** paths = malloc(sizeof(char**) * MAX_NUMBER_PATH);
+    char* temp = malloc(sizeof(char*) * MAX_INPUT_DATA);
     scpy(temp, string);
 
     int count = stok(temp, delim, paths);
 
     for (int j = 0; j < count; j++) {
         if (slen(paths[j]) > MAX_PATH + 1) //+1 - символ конца строки
+        {
+            free(temp);
+            free(paths);
             return 1;
+        }
     }
+    free(paths);
+    free(temp);
     return 0;
 }
 int checkPaths(char* string, char delim)
 {
-    char* paths[MAX_NUMBER_PATH];
-    char temp[MAX_INPUT_DATA];
+    char** paths = malloc(sizeof(char**) * MAX_NUMBER_PATH);
+    char* temp = malloc(sizeof(char*) * MAX_INPUT_DATA);
     scpy(temp, string);
     int count = stok(temp, delim, paths);
 
     for (int i = 0; i < count; i++) {
         if (sstr(paths[i], "/") == NULL)
-            if (sstr(paths[i], "\\") == NULL)
+            if (sstr(paths[i], "\\") == NULL) {
+                free(paths);
+                free(temp);
                 return 1;
+            }
     }
+    free(paths);
+    free(temp);
     return 0;
 }
 int checkSymbols(char* string, char delim)
 {
-    char* paths[MAX_NUMBER_PATH];
-    char temp[MAX_INPUT_DATA];
+    char** paths = malloc(sizeof(char**) * MAX_NUMBER_PATH);
+    char* temp = malloc(sizeof(char*) * MAX_INPUT_DATA);
     scpy(temp, string);
 
     int count = stok(temp, delim, paths);
@@ -78,9 +90,14 @@ int checkSymbols(char* string, char delim)
         for (int j = 0; j < slen(paths[i]); j++) {
             if (paths[i][j] == '\"' || paths[i][j] == '<' || paths[i][j] == '>'
                 || paths[i][j] == '?' || paths[i][j] == '*'
-                || paths[i][j] == '|')
+                || paths[i][j] == '|') {
+                free(paths);
+                free(temp);
                 return 1;
+            }
         }
     }
+    free(paths);
+    free(temp);
     return 0;
 }
